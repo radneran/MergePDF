@@ -2,7 +2,7 @@ package pers.pdfstuff.pdfmerger.commons.core;
 
 public abstract class ComponentManager {
 
-    ComponentManager() {
+    protected ComponentManager() {
         registerAsEventHandler();
     }
 

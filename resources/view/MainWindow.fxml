@@ -2,19 +2,27 @@
 
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 
-<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
 	<stylesheets>
 		<URL value="@DarkTheme.css" />
 	</stylesheets>
+		<VBox fx:id="documentList" alignment="CENTER" minWidth="340" prefWidth="340">
+			<padding>
+				<Insets bottom="10" left="10" right="10" top="10" />
+			</padding>
+			<StackPane fx:id="docListPanelPlaceholder" VBox.vgrow="ALWAYS" />
+      <opaqueInsets>
+         <Insets />
+      </opaqueInsets>
+		</VBox>
 
-	<MenuBar VBox.vgrow="NEVER">
+	<!-- <MenuBar VBox.vgrow="NEVER">
 		<Menu mnemonicParsing="false" text="File">
 			<MenuItem mnemonicParsing="false" onAction="#handleExit"
 				text="Exit" />
@@ -24,17 +32,14 @@
 				onAction="#handleHelp" text="Help" />
 		</Menu>
 	</MenuBar>
-
-	<SplitPane id="splitPane" fx:id="splitPane" dividerPositions="0.4"
-		VBox.vgrow="ALWAYS">
-		<VBox fx:id="documentList" minWidth="340" prefWidth="340"
-			SplitPane.resizableWithParent="false">
-			<padding>
-				<Insets top="10" right="10" bottom="10" left="10" />
-			</padding>
-			<StackPane fx:id="docListPanelPlaceholder" VBox.vgrow="ALWAYS" />
-		</VBox>
-	</SplitPane>
-
+ -->
+	<!-- <SplitPane id="splitPane" fx:id="splitPane" VBox.vgrow="ALWAYS" /> -->
+   <HBox fx:id="controls">
+   	<Button fx:id="mergeButton" alignment="CENTER" mnemonicParsing="false" text="Merge">
+      <opaqueInsets>
+         <Insets />
+      </opaqueInsets>
+   	</Button>
+	</HBox>
 	<StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER" />
 </VBox>

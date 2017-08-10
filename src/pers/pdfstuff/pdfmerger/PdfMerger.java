@@ -8,34 +8,41 @@ import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
+import pers.pdfstuff.pdfmerger.commons.core.Config;
 import pers.pdfstuff.pdfmerger.commons.core.LogsCenter;
-import pers.pdfstuff.pdfmerger.ui.MainWindow;
+import pers.pdfstuff.pdfmerger.logic.LogicManager;
+import pers.pdfstuff.pdfmerger.model.ModelManager;
+import pers.pdfstuff.pdfmerger.ui.UiManager;
 
-public class PdfMerger {
-
-    public static void main(String args[]) {
-        final Logger logger = LogsCenter.getLogger(PdfMerger.class);
-        LogsCenter.addFileHandler(logger);
-        logger.info("INITIALISING");
-        MainWindow mw = new MainWindow();
-        mw.logTest();
+public class PdfMerger extends Application {
+    private final Logger logger = LogsCenter.getLogger(PdfMerger.class);
+    
+    protected Config config;
+    protected LogicManager logic;
+    protected ModelManager model;
+    protected UiManager ui;
+    
+    public void init() throws Exception {
+        super.init();
+        logger.info("=============== Initializing Application ===============");
+        config = new Config();
+        
+        model = new ModelManager(getParameters().getRaw());
+        
+        logic = new LogicManager(model);
+        
+        ui = new UiManager(logic, config);
     }
-
-    public void combine() {
-        try {
-            PDFMergerUtility mergePdf = new PDFMergerUtility();
-            String folder = "C:/Users/Naren/Desktop/pdfbox";
-            File _folder = new File(folder);
-            File[] filesInFolder;
-            filesInFolder = _folder.listFiles();
-            for (File string : filesInFolder) {
-                mergePdf.addSource(string);
-            }
-            mergePdf.setDestinationFileName("C:/Users/Naren/Desktop/pdfbox/Combined.pdf");
-            mergePdf.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
-        } catch (Exception e) {
-
-        }
+    
+    @Override
+    public void start(Stage primaryStage) {
+        logger.info("Starting application...");
+        ui.start(primaryStage);
+    }
+    public static void main(String args[]) {
+        launch(args);
     }
 
     public void createNew() {
@@ -50,5 +57,4 @@ public class PdfMerger {
 
         }
     }
-
 }

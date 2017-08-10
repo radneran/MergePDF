@@ -28,6 +28,10 @@ public class EventsCenter {
         return instance;
     }
     
+    public static void clearSubscribers() {
+        instance = null;
+    }
+    
     public void registerEventHandler(Object o) {
         eventBus.register(o);
     }
