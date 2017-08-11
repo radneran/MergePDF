@@ -22,9 +22,9 @@ public class FileUtils {
             for (File document : documentList) {
                 mergePdf.addSource(document);
             }
-            mergePdf.setDestinationFileName("C:/Users/Naren/Desktop/pdfbox/Combined.pdf");
+            mergePdf.setDestinationFileName("Combined.pdf");
             mergePdf.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
-            return new File("C:/Users/Naren/Desktop/pdfbox/Combined.pdf");
+            return new File("Combined.pdf");
         } catch (Exception e) {
             e.printStackTrace();
         }
