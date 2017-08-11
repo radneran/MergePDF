@@ -15,6 +15,7 @@ import pers.pdfstuff.pdfmerger.commons.events.DocumentListChangedEvent;
 
 public class ModelManager extends ComponentManager implements Model {
 
+    public static final int SCROLL_TO_LAST = -1;
     private static final Logger logger = LogsCenter.getLogger(ModelManager.class);
 
     private ObservableList<File> mainDocumentList = FXCollections.observableArrayList();;
@@ -54,20 +55,22 @@ public class ModelManager extends ComponentManager implements Model {
     @Override
     public synchronized void removeDocument(int index) {
         File removed = mainDocumentList.remove(index);
-        EventsCenter.getInstance()
-                .post(new DocumentListChangedEvent("File removed:" + removed.getName()));
+        EventsCenter.getInstance().post(new DocumentListChangedEvent("File removed:" + removed.getName(), index));
     }
 
     @Override
-    public synchronized void moveDocument(File file, int index) {
-        // TODO Auto-generated method stub
-
+    public synchronized void moveDocument(int start, int destination) {
+        File toMove = mainDocumentList.remove(start);
+        mainDocumentList.add(destination, toMove);
+        EventsCenter.getInstance().post(
+                new DocumentListChangedEvent("Moved " + toMove.getName() + " from " + start + " to " + destination, destination));
     }
 
     @Override
     public synchronized void addDocument(File file) {
         mainDocumentList.add(file.getAbsoluteFile());
-        EventsCenter.getInstance().post(new DocumentListChangedEvent("New file added:" + file.getName()));
+        int scrollToLastIndex = -1;
+        EventsCenter.getInstance().post(new DocumentListChangedEvent("New file added:" + file.getName(), scrollToLastIndex));
     }
 
     @Override

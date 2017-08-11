@@ -4,37 +4,34 @@ import java.util.logging.Logger;
 
 import com.google.common.eventbus.Subscribe;
 
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.application.Platform;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import pers.pdfstuff.pdfmerger.PdfMerger;
 import pers.pdfstuff.pdfmerger.commons.core.ComponentManager;
 import pers.pdfstuff.pdfmerger.commons.core.Config;
-import pers.pdfstuff.pdfmerger.commons.core.EventsCenter;
 import pers.pdfstuff.pdfmerger.commons.core.LogsCenter;
-import pers.pdfstuff.pdfmerger.commons.events.DeleteEvent;
 import pers.pdfstuff.pdfmerger.commons.events.DocumentListChangedEvent;
 import pers.pdfstuff.pdfmerger.logic.Logic;
+import pers.pdfstuff.pdfmerger.model.ModelManager;
 
 public class UiManager extends ComponentManager implements Ui {
 
     private static final Logger logger = LogsCenter.getLogger(UiManager.class);
 
     private Logic logic;
-    private Config config;
     private MainWindow mainWindow;
 
-    public UiManager(Logic logic, Config config) {
+    public UiManager(Logic logic) {
         super();
         this.logic = logic;
-        this.config = config;
     }
 
     @Override
     public void start(Stage primaryStage) {
+        primaryStage.getIcons().add(new Image(PdfMerger.class.getResourceAsStream(Config.ICON)));
         try {
-            mainWindow = new MainWindow(primaryStage, logic, config);
+            mainWindow = new MainWindow(primaryStage, logic);
             mainWindow.show();
             mainWindow.fillInnerParts();
         } catch (Exception e) {
@@ -50,6 +47,19 @@ public class UiManager extends ComponentManager implements Ui {
 
     @Subscribe
     public void handleDocumentListChangedEvent(DocumentListChangedEvent event) {
-        mainWindow.syncWithMasterDocumentList();
+        Platform.runLater(new Runnable() {
+
+            @Override
+            public void run() {
+                mainWindow.syncWithMasterDocumentList();
+                if (event.scrollToIndex == ModelManager.SCROLL_TO_LAST) {
+                    mainWindow.getDocListPanel()
+                            .scrollTo(mainWindow.getDocListPanel().getListView().getItems().size() - 1);
+                } else {
+                    mainWindow.getDocListPanel().scrollTo(event.scrollToIndex);
+                }
+            }
+
+        });
     }
 }

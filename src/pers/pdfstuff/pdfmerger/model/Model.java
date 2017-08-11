@@ -10,7 +10,7 @@ public interface Model {
     //Removes the document specified by the index
     void removeDocument(int index);
     //Moves the document to the given index
-    void moveDocument(File file, int index);
+    void moveDocument(int start, int destination);
     //Adds document to list
     void addDocument(File file);
     //Sets the document list to the given one

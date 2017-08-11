@@ -13,7 +13,7 @@ public class FileUtils {
     }
     
     private static boolean isPdf(File file) {
-        return file.getAbsolutePath().endsWith("pdf");
+        return file.getAbsolutePath().toLowerCase().endsWith("pdf");
     }
     
     public static File mergeFiles(List<File> documentList) {
