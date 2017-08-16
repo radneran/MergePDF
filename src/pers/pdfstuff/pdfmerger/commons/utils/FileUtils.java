@@ -6,6 +6,8 @@ import java.util.List;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 
+import pers.pdfstuff.pdfmerger.commons.core.Config;
+
 public class FileUtils {
     
     public static boolean isValidFile(File file) {
@@ -22,13 +24,15 @@ public class FileUtils {
             for (File document : documentList) {
                 mergePdf.addSource(document);
             }
-            mergePdf.setDestinationFileName("Combined.pdf");
+            mergePdf.setDestinationFileName(Config.getSaveLocation());
             mergePdf.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
-            return new File("Combined.pdf");
+            return new File(Config.getSaveLocation());
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
+    
+    //Compress file with images
 
 }

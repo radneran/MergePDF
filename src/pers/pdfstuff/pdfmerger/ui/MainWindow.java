@@ -1,5 +1,6 @@
 package pers.pdfstuff.pdfmerger.ui;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import javafx.event.EventHandler;
@@ -7,15 +8,18 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import pers.pdfstuff.pdfmerger.commons.core.Config;
 import pers.pdfstuff.pdfmerger.commons.core.EventsCenter;
 import pers.pdfstuff.pdfmerger.commons.core.LogsCenter;
-import pers.pdfstuff.pdfmerger.commons.events.MergeEvent;
+import pers.pdfstuff.pdfmerger.commons.events.NewCommandEvent;
 import pers.pdfstuff.pdfmerger.logic.Logic;
+import pers.pdfstuff.pdfmerger.logic.commands.MergeCommand;
 
 public class MainWindow extends UiPart<Region> {
 
@@ -27,6 +31,7 @@ public class MainWindow extends UiPart<Region> {
     private Stage primaryStage;
     private Logic logic;
     private DocumentListPanel docListPanel;
+    private StatusBarFooter statusBarFooter;
 
     @FXML
     private MenuItem helpMenuItem;
@@ -36,6 +41,15 @@ public class MainWindow extends UiPart<Region> {
 
     @FXML
     private Button mergeButton;
+    
+    @FXML
+    private Button saveButton;
+        
+    @FXML
+    private StackPane statusbarPlaceholder;
+    
+    @FXML
+    private RadioButton setCompress;
 
     public MainWindow(Stage primaryStage, Logic logic) {
         super(FXML);
@@ -57,8 +71,15 @@ public class MainWindow extends UiPart<Region> {
 
     public void fillInnerParts() {
         logger.info("Document List Size: " + logic.getSortedDocList().size());
+        
         docListPanel = new DocumentListPanel(logic.getSortedDocList());
         docListPanelPlaceholder.getChildren().add(docListPanel.getRoot());
+        
+        statusBarFooter = new StatusBarFooter();
+        statusbarPlaceholder.getChildren().add(statusBarFooter.getRoot());
+        
+        setCompress = new RadioButton();
+        
         setButtonPressedEventHandler();
     }
 
@@ -86,7 +107,20 @@ public class MainWindow extends UiPart<Region> {
             @Override
             public void handle(MouseEvent event) {
                 logger.info("Merge button pressed");
-                EventsCenter.getInstance().post(new MergeEvent());
+                EventsCenter.getInstance().post(new NewCommandEvent(new MergeCommand()));
+                event.consume();
+            }
+
+        });
+        
+        saveButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                logger.info("Save As button pressed");
+                FileChooser chooser = new FileChooser();
+                File saveFile = chooser.showSaveDialog(primaryStage);
+                Config.updateExactSaveLocation(saveFile.getAbsolutePath());
                 event.consume();
             }
 
@@ -96,5 +130,14 @@ public class MainWindow extends UiPart<Region> {
     public DocumentListPanel getDocListPanel() {
         return docListPanel;
     }
-
+    
+    public void bringWindowToForeground() {
+        logger.info("Bringing window to foreground.");
+        primaryStage.toFront();
+    }
+    
+    public StatusBarFooter getStatusBarFooter() {
+        return statusBarFooter;
+    }
+   
 }

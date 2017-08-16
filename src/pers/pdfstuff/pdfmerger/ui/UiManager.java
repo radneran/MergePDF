@@ -12,6 +12,8 @@ import pers.pdfstuff.pdfmerger.commons.core.ComponentManager;
 import pers.pdfstuff.pdfmerger.commons.core.Config;
 import pers.pdfstuff.pdfmerger.commons.core.LogsCenter;
 import pers.pdfstuff.pdfmerger.commons.events.DocumentListChangedEvent;
+import pers.pdfstuff.pdfmerger.commons.events.DuplicateInstanceEvent;
+import pers.pdfstuff.pdfmerger.commons.events.SaveLocationChangedEvent;
 import pers.pdfstuff.pdfmerger.logic.Logic;
 import pers.pdfstuff.pdfmerger.model.ModelManager;
 
@@ -62,4 +64,19 @@ public class UiManager extends ComponentManager implements Ui {
 
         });
     }
+    
+    @Subscribe
+    public void handleDuplicateInstanceEvent(DuplicateInstanceEvent event) {
+        mainWindow.bringWindowToForeground();
+    }
+    @Subscribe
+    public void handleSaveLocationChangedEvent(SaveLocationChangedEvent event) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                mainWindow.getStatusBarFooter().updateSaveLocation(Config.getSaveLocation());
+            }
+        });
+    }
+
 }

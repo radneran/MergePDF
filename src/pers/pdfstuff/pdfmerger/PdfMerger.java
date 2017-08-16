@@ -67,7 +67,17 @@ public class PdfMerger extends Application {
             logger.severe("Error while closing socket");
             e.printStackTrace();
         }
+        //cleanUp();
     }
+
+   /* private void cleanUp() {
+        if(Config.saveLocationSet) {
+            File savedFile = new File(Config.getSaveLocation());
+            if (savedFile.exists()) {
+                
+            }
+        }
+    }*/
 
     public static void main(String args[]) {
         launch(args);

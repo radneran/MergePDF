@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.RadioButton?>
 
 <VBox xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
 	<stylesheets>
@@ -34,8 +35,14 @@
 	</MenuBar>
  -->
 	<!-- <SplitPane id="splitPane" fx:id="splitPane" VBox.vgrow="ALWAYS" /> -->
-   <HBox fx:id="controls">
+   <HBox fx:id="controls" spacing="5">
    	<Button fx:id="mergeButton" alignment="CENTER" mnemonicParsing="false" text="Merge">
+      <opaqueInsets>
+         <Insets />
+      </opaqueInsets>
+   	</Button>
+   	<RadioButton fx:id="setCompress" text="Compress file" alignment="CENTER"/>
+   	<Button fx:id="saveButton" alignment="CENTER" mnemonicParsing="false" text="Save As..">
       <opaqueInsets>
          <Insets />
       </opaqueInsets>

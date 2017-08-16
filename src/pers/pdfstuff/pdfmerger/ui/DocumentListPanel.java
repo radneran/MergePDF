@@ -20,10 +20,11 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Region;
 import pers.pdfstuff.pdfmerger.commons.core.EventsCenter;
 import pers.pdfstuff.pdfmerger.commons.core.LogsCenter;
-import pers.pdfstuff.pdfmerger.commons.events.DeleteEvent;
-import pers.pdfstuff.pdfmerger.commons.events.FileDropEvent;
-import pers.pdfstuff.pdfmerger.commons.events.MergeEvent;
-import pers.pdfstuff.pdfmerger.commons.events.MoveEvent;
+import pers.pdfstuff.pdfmerger.commons.events.NewCommandEvent;
+import pers.pdfstuff.pdfmerger.logic.commands.AddCommand;
+import pers.pdfstuff.pdfmerger.logic.commands.DeleteCommand;
+import pers.pdfstuff.pdfmerger.logic.commands.MergeCommand;
+import pers.pdfstuff.pdfmerger.logic.commands.MoveCommand;
 
 public class DocumentListPanel extends UiPart<Region> {
     
@@ -103,7 +104,7 @@ public class DocumentListPanel extends UiPart<Region> {
                 if (db.hasFiles()) {
                     List<File> newFiles = db.getFiles();
                     logger.info("No. Files dropped: " + newFiles.size());
-                    EventsCenter.getInstance().post(new FileDropEvent(newFiles));
+                    EventsCenter.getInstance().post(new NewCommandEvent(new AddCommand(newFiles)));
                 }
                 event.setDropCompleted(true);
                 event.consume();
@@ -120,9 +121,10 @@ public class DocumentListPanel extends UiPart<Region> {
                 int selectedIndex = getListView().getSelectionModel().getSelectedIndex();
                 
                 switch (event.getCode()) {
+                case DELETE:
                 case D:
                     logger.info("Delete key pressed on file number " + selectedIndex);
-                    EventsCenter.getInstance().post(new DeleteEvent(selectedIndex));
+                    EventsCenter.getInstance().post(new NewCommandEvent(new DeleteCommand(selectedIndex)));
                     break;
                 case UP:
                     if (selectedIndex > 0) {
@@ -141,7 +143,7 @@ public class DocumentListPanel extends UiPart<Region> {
                     logger.info("Clipboard contains: " + content.getFiles().get(0).getName());
                     break;
                 case ENTER:
-                    EventsCenter.getInstance().post(new MergeEvent());
+                    EventsCenter.getInstance().post(new NewCommandEvent(new MergeCommand()));
                     break;
                 default:
                     break;
@@ -160,7 +162,7 @@ public class DocumentListPanel extends UiPart<Region> {
                 switch(event.getCode()) {
                 case CONTROL:
                     content.put(DESTINATION, selectedIndex);
-                    EventsCenter.getInstance().post(new MoveEvent(content));
+                    EventsCenter.getInstance().post(new NewCommandEvent(new MoveCommand(content)));
                     break;
                 default:
                     break;

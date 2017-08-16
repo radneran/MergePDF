@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import pers.pdfstuff.pdfmerger.commons.core.ComponentManager;
+import pers.pdfstuff.pdfmerger.commons.core.Config;
 import pers.pdfstuff.pdfmerger.commons.core.EventsCenter;
 import pers.pdfstuff.pdfmerger.commons.core.LogsCenter;
 import pers.pdfstuff.pdfmerger.commons.events.DocumentListChangedEvent;
@@ -55,22 +56,29 @@ public class ModelManager extends ComponentManager implements Model {
     @Override
     public synchronized void removeDocument(int index) {
         File removed = mainDocumentList.remove(index);
-        EventsCenter.getInstance().post(new DocumentListChangedEvent("File removed:" + removed.getName(), index));
+        if (index >= mainDocumentList.size()) {
+            EventsCenter.getInstance().post(new DocumentListChangedEvent("File removed:" + removed.getName(), SCROLL_TO_LAST));
+        } else {
+            EventsCenter.getInstance().post(new DocumentListChangedEvent("File removed:" + removed.getName(), index));
+        }
     }
 
     @Override
     public synchronized void moveDocument(int start, int destination) {
         File toMove = mainDocumentList.remove(start);
         mainDocumentList.add(destination, toMove);
-        EventsCenter.getInstance().post(
-                new DocumentListChangedEvent("Moved " + toMove.getName() + " from " + start + " to " + destination, destination));
+        EventsCenter.getInstance().post(new DocumentListChangedEvent(
+                "Moved " + toMove.getName() + " from " + start + " to " + destination, destination));
     }
 
     @Override
     public synchronized void addDocument(File file) {
         mainDocumentList.add(file.getAbsoluteFile());
-        int scrollToLastIndex = -1;
-        EventsCenter.getInstance().post(new DocumentListChangedEvent("New file added:" + file.getName(), scrollToLastIndex));
+        String filePath = file.getAbsolutePath();
+        logger.info("New save location: " + filePath.substring(0, filePath.lastIndexOf('\\')));
+        Config.updateSaveLocation(filePath.substring(0, filePath.lastIndexOf('\\')));
+        EventsCenter.getInstance()
+                .post(new DocumentListChangedEvent("New file added:" + file.getName(), SCROLL_TO_LAST));
     }
 
     @Override
